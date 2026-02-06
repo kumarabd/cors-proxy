@@ -9,6 +9,15 @@ app.use(cors({ origin: "*" }));
 // Basic health check for Render
 app.get("/", (_req, res) => res.send("ok"));
 
+app.get("/debug", (_req, res) => {
+  const k = process.env.YOU_API_KEY || "";
+  res.json({
+    hasKey: Boolean(k),
+    keyLen: k.length,
+    keyPrefix: k.slice(0, 6) // don't print the whole key
+  });
+});
+
 // Proxy endpoint
 app.get("/you/search", async (req, res) => {
   try {
