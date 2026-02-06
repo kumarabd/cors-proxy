@@ -35,7 +35,7 @@ app.get("/you/search", async (req, res) => {
     }
 
     // Build upstream URL
-    const url = new URL("https://api.ydc-index.io/search");
+    const url = new URL("https://api.ydc-index.io/v1/search");
     url.searchParams.set("query", query);
     url.searchParams.set("count", String(count));
     if (freshness) url.searchParams.set("freshness", String(freshness));
