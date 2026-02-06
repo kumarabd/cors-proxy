@@ -23,19 +23,15 @@ app.get("/you/search", async (req, res) => {
   try {
     const query = req.query.query;
     const count = req.query.count ?? "5";
-    const freshness = req.query.freshness; // optional
+    const freshness = req.query.freshness;
 
-    if (!query) {
-      return res.status(400).json({ error: "Missing query param: query" });
-    }
+    if (!query) return res.status(400).json({ error: "Missing query param: query" });
 
     const apiKey = process.env.YOU_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "Missing YOU_API_KEY env var" });
-    }
+    if (!apiKey) return res.status(500).json({ error: "Missing YOU_API_KEY env var" });
 
-    // Build upstream URL
-    const url = new URL("https://api.ydc-index.io/v1/search");
+    // ✅ Correct upstream endpoint
+    const url = new URL("https://ydc-index.io/v1/search");
     url.searchParams.set("query", query);
     url.searchParams.set("count", String(count));
     if (freshness) url.searchParams.set("freshness", String(freshness));
@@ -47,8 +43,11 @@ app.get("/you/search", async (req, res) => {
       }
     });
 
+    console.log("Upstream URL:", url.toString());
+    console.log("Upstream status:", upstream.status);
+
     const text = await upstream.text();
-    // Pass-through content type
+
     res.status(upstream.status);
     res.setHeader("Content-Type", upstream.headers.get("content-type") || "application/json");
     return res.send(text);
